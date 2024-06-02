@@ -19,6 +19,7 @@ import * as errorCodes from './utils/errorCodes'
 import { DiagnosticLanguage, LanguageDescription } from './utils/languageDescription'
 import * as typeConverters from './utils/typeConverters'
 import TypingsStatus, { AtaProgressReporter } from './utils/typingsStatus'
+import { formatDiagnostic } from './utils/formatDiagnostic'
 
 // Style check diagnostics that can be reported as warnings
 const styleCheckDiagnostics = new Set([
@@ -241,7 +242,8 @@ export default class TypeScriptServiceClientHost implements Disposable {
   }
 
   private createMarkerData(diagnostics: Proto.Diagnostic[]): (Diagnostic & { reportUnnecessary: any, reportDeprecated: any })[] {
-    return diagnostics.map(tsDiag => this.tsDiagnosticToLspDiagnostic(tsDiag))
+    const ds = diagnostics.map(tsDiag => this.tsDiagnosticToLspDiagnostic(tsDiag))
+    return formatDiagnostic(ds) as any
   }
 
   private tsDiagnosticToLspDiagnostic(diagnostic: Proto.Diagnostic): (Diagnostic & { reportUnnecessary: any, reportDeprecated: any }) {
